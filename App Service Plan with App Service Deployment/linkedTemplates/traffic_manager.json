@@ -1,0 +1,99 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "TMParameters": {
+            "type": "object",
+            "metadata": {
+                "description": "Get Traffic Manager Parameters"
+            }
+        },
+        "WEBSettings": {
+            "type": "object",
+            "metadata": {
+                "description": "Get WEB Settings Parameters"
+            }
+        },
+        "ASPSettings": {
+            "type": "object",
+            "metadata": {
+                "description": "Get ASP Settings Parameters"
+            }
+        }
+    },
+    "functions": [],
+    "variables": {},
+    "resources": [
+        {
+            "name": "[parameters('TMParameters').name]",
+            "type": "Microsoft.Network/trafficManagerProfiles",
+            "apiVersion": "2018-04-01",
+            "tags": {
+            },
+            "location": "global",
+            "properties": {
+                "profileStatus": "Enabled",
+                "trafficRoutingMethod": "Performance",
+                "dnsConfig": {
+                    "relativeName": "[parameters('TMParameters').relativeName]",
+                    "ttl": 60
+                },
+                "monitorConfig": {
+                    "profileMonitorStatus": "Online",
+                    "protocol": "HTTP",
+                    "port": 80,
+                    "path": "/",
+                    "intervalInSeconds": 10,
+                    "timeoutInSeconds": 5,
+                    "toleratedNumberOfFailures": 3
+                },
+                "endpoints": [
+                    {
+                        "type": "Microsoft.Network/trafficManagerProfiles/azureEndpoints",
+                        "dependsOn": [
+                            "[resourceId('Microsoft.Network/trafficManagerProfiles/', parameters('TMParameters').name)]",
+                            "[resourceId('Microsoft.Web/sites/',parameters('WEBSettings').name1)]"
+                        ],
+                        "name": "[concat(parameters('TMParameters').endpoint1)]",
+                        "properties": {
+                            "targetResourceId": "[resourceId('Microsoft.Web/sites/', parameters('WEBSettings').name1)]",
+                            "endpointStatus": "Enabled",
+                            "endpointMonitorStatus": "Online",
+                            "target": "prodweb1.azurewebsites.net",
+                            "weight": 1,
+                            "priority": 10,
+                            "endpointLocation": "[parameters('ASPSettings').location1]"
+                        }
+                    },
+                    {
+                        "name": "[concat(parameters('TMParameters').endpoint2)]",
+                        "type": "Microsoft.Network/trafficManagerProfiles/azureEndpoints",
+                        "dependsOn": [
+                            "[resourceId('Microsoft.Network/trafficManagerProfiles/', parameters('TMParameters').name)]",
+                            "[resourceId('Microsoft.Web/sites/',parameters('WEBSettings').name2)]"
+                        ],
+                        "properties": {
+                            "targetResourceId": "[resourceId('Microsoft.Web/sites/', parameters('WEBSettings').name2)]",
+                            "endpointStatus": "Enabled",
+                            "endpointMonitorStatus": "Online",
+                            "target": "drweb1.azurewebsites.net",
+                            "weight": 1,
+                            "priority": 20,
+                            "endpointLocation": "[parameters('ASPSettings').location2]"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "outputs": {
+        "Endpoint-1": {
+            "type": "string",
+            "value": "[concat(parameters('TMParameters').endpoint1)]"
+        },
+        "Endpoint-2": {
+            "type": "string",
+            "value": "[concat(parameters('TMParameters').endpoint2)]"
+        }
+    }
+}

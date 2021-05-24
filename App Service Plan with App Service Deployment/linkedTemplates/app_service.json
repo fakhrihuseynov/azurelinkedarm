@@ -1,0 +1,88 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "ASPSettings": {
+            "type": "object",
+            "metadata": {
+                "description": "Get ASP Settings Parameters"
+            }
+        },
+        "WEBSettings": {
+            "type": "object",
+            "metadata": {
+                "description": "Get WEB Settings Parameters"
+            }
+        }
+    },
+    "functions": [],
+    "variables": {},
+    "resources": [
+        {
+            "name": "[concat(parameters('WEBSettings').name1)]",
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2018-11-01",
+            "location": "[parameters('ASPSettings').location1]",
+            "tags": {
+                "[concat('hidden-related:', resourceGroup().id, parameters('ASPSettings').name1)]": "PROD",
+                "displayName": "[concat(parameters('WEBSettings').displayName1)]"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('ASPSettings').name1)]"
+            ],
+            "properties": {
+                "name": "[concat(parameters('WEBSettings').propertyName1)]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('ASPSettings').name1)]"
+            }
+        },
+        {
+            "name": "[concat(parameters('WEBSettings').name2)]",
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2018-11-01",
+            "location": "[parameters('ASPSettings').location2]",
+            "tags": {
+                "[concat('hidden-related:', resourceGroup().id, parameters('ASPSettings').name2)]": "DR",
+                "displayName": "[concat(parameters('WEBSettings').displayName2)]"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('ASPSettings').name2)]"
+            ],
+            "properties": {
+                "name": "[concat(parameters('WEBSettings').propertyName2)]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('ASPSettings').name2)]"
+            }
+        },
+        {
+            "name": "PROD",
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2018-02-01",
+            "location": "[parameters('ASPSettings').location1]",
+            "sku": {
+                "name": "S1"
+            },
+            "tags": {
+                "displayName": "PROD"
+            },
+            "properties": {
+                "name": "PROD"
+            }
+        },
+        {
+            "name": "DR",
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2018-02-01",
+            "location": "[parameters('ASPSettings').location2]",
+            "sku": {
+                "name": "S1"
+            },
+            "tags": {
+                "displayName": "DR"
+            },
+            "properties": {
+                "name": "DR"
+            }
+        }
+    ],
+
+    "outputs": {}
+}

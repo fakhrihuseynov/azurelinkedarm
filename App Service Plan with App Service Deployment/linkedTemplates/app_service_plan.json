@@ -1,0 +1,52 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "ASPSettings": {
+            "type": "object",
+            "metadata": {
+                "description": "Get ASP Settings Parameters"
+            }
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2018-02-01",
+            "name": "[concat(parameters('ASPSettings').name1)]",
+            "location": "[parameters('ASPSettings').location1]",
+            "sku": {
+                "Tier": "[parameters('ASPSettings').sku]",
+                "Name": "[parameters('ASPSettings').skucode]",
+                "capacity": "[parameters('ASPSettings').capacity]"
+            },
+            "kind": "",
+            "properties": {
+                "name": "[parameters('ASPSettings').name1]",
+                "workerSize": "[parameters('ASPSettings').workerSize]",
+                "workerSizeId": "[parameters('ASPSettings').workerSizeId]",
+                "numberOfWorkers": "[parameters('ASPSettings').numberOfWorkers]",
+                "reserved": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2018-02-01",
+            "name": "[concat(parameters('ASPSettings').name2)]",
+            "location": "[parameters('ASPSettings').location2]",
+            "sku": {
+                "Tier": "[parameters('ASPSettings').sku]",
+                "Name": "[parameters('ASPSettings').skucode]",
+                "capacity": "[parameters('ASPSettings').capacity]"
+            },
+            "kind": "",
+            "properties": {
+                "name": "[parameters('ASPSettings').name2]",
+                "workerSize": "[parameters('ASPSettings').workerSize]",
+                "workerSizeId": "[parameters('ASPSettings').workerSizeId]",
+                "numberOfWorkers": "[parameters('ASPSettings').numberOfWorkers]",
+                "reserved": false
+            }
+        }
+    ]
+}
