@@ -1,6 +1,6 @@
 ﻿Param(
     [string] $ResourceGroupLocation = 'West Europe',
-    [string] $ResourceGroupName = 'Module5',
+    [string] $ResourceGroupName = 'MyRG',
     [string] $StorageAccountName,
     [string] $StorageContainerName = $ResourceGroupName.ToLowerInvariant() + '-stageartifacts',
     [string] $TemplateFile = "main.json",
