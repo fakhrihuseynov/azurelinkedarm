@@ -1,0 +1,4 @@
+# Introducing ARM Linked template for deploying:
+1) Two App Service plan with 2 instance each on separated regions (East US <---> Central US)
+2) Two Web App with zero config provisioning on separated regions (East US <---> Central US)
+3) Azure Traffic Manager holds two endpoints on it for the websites redundancy
