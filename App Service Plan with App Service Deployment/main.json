@@ -1,0 +1,106 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "_artifactsLocation": {
+            "type": "string",
+            "metadata": {
+                "description": "URL to location of linked templates"
+            }
+        },
+        "_artifactsLocationSasToken": {
+            "type": "securestring",
+            "metadata": {
+                "description": "SAS Token to access linked templates"
+            }
+        },
+        "ASPSettings": {
+            "type": "object",
+            "metadata": {
+                "description": "Set of App Service Plan Settings"
+            }
+        },
+        "WEBSettings": {
+            "type": "object",
+            "metadata": {
+                "description": "Set of Wev Service Settings"
+            }
+        },
+        "TMParameters": {
+            "type": "object",
+            "metadata": {
+                "description": "Set of Traffic Manager Settings"
+            }
+        }
+    },
+    "variables": {
+        "planTemplateFile": "/linkedTemplates/app_service_plan.json",
+        "webTemplateFile": "/linkedTemplates/app_service.json",
+        "trafficmanagerFile": "/linkedTemplates/traffic_manager.json"
+    },
+    "resources": [
+        {
+            "name": "CreateASP",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(parameters('_artifactsLocation'),variables('planTemplateFile'), parameters('_artifactsLocationSasToken'))]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "ASPSettings": {
+                        "value": "[parameters('ASPSettings')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "CreateWEB",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(parameters('_artifactsLocation'),variables('webTemplateFile'), parameters('_artifactsLocationSasToken'))]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "ASPSettings": {
+                        "value": "[parameters('ASPSettings')]"
+                    },
+                    "WEBSettings": {
+                        "value": "[parameters('WEBSettings')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "CreateTrafficManager",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', 'CreateWEB')]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(parameters('_artifactsLocation'),variables('trafficmanagerFile'), parameters('_artifactsLocationSasToken'))]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "ASPSettings": {
+                        "value": "[parameters('ASPSettings')]"
+                    },
+                    "WEBSettings": {
+                        "value": "[parameters('WEBSettings')]"
+                    },
+                    "TMParameters":{
+                        "value": "[parameters('TMParameters')]"
+                    }
+                }
+            }
+        }
+    ]
+}

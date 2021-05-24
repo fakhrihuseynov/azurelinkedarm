@@ -1,0 +1,40 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "ASPSettings": {
+            "value": {
+                "name1": "PROD",
+                "name2": "DR",
+                "location1": "East US",
+                "location2": "Central US",
+                "sku": "Standard",
+                "skucode": "S1",
+                "workerSize": "0",
+                "workerSizeId": "0",
+                "numberOfWorkers": "0",
+                "capacity": "2"
+            }
+        },
+        "WEBSettings": {
+            "value": {
+                "name1": "prodweb1",
+                "name2": "drweb1",
+                "displayName1": "prodweb1",
+                "displayName2": "drweb1",
+                "propertyName1": "prodweb1",
+                "propertyName2": "drweb1"
+            }
+        },
+        "TMParameters": {
+            "value": {
+                "name": "WEBTM",
+                "relativeName": "webtm",
+                "trafficRoutingMethod": "Performance",
+                "maxReturn": 0,
+                "endpoint1": "prod_endpoint",
+                "endpoint2": "dr_endpoint"
+            }
+        }
+    }
+}
