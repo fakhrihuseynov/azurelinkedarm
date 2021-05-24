@@ -1,0 +1,98 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "_artifactsLocation": {
+            "type": "string",
+            "metadata": {
+                "description": "URL to location of linked templates"
+            }
+        },
+        "_artifactsLocationSasToken": {
+            "type": "securestring",
+            "metadata": {
+                "description": "SAS Token to access linked templates"
+            }
+        },
+        "VNetSettings": {
+            "type": "object",
+            "metadata": {
+                "description": "Set of the Virtual Network Settings"
+            }
+        },
+        "StorageAccountType": {
+            "type": "string"
+        },
+        "VmSettings": {
+            "type": "object",
+            "metadata": {
+                "description": "Set of the VM Settings"
+            }
+        }
+    },
+    "functions": [],
+    "variables": {
+        "storageAccountTemplateFileName": "/linkedTemplates/storageAccount.json",
+        "virtualNetworkTemplateFileName": "/linkedTemplates/virtualNetwork.json",
+        "virtualmachineTemplatefileName": "/linkedTemplates/virtualMachine.json"
+    },
+    "resources": [
+        {
+            "name": "CreateStorage",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(parameters('_artifactsLocation'), variables('storageAccountTemplateFileName'), parameters('_artifactsLocationSasToken'))]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "StorageAccountType": {
+                        "value": "[parameters('StorageAccountType')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "CreateVnet",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(parameters('_artifactsLocation'), variables('virtualNetworkTemplateFileName'), parameters('_artifactsLocationSasToken'))]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "VNetSettings": {
+                        "value": "[parameters('VNetSettings')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "CreateVM",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(parameters('_artifactsLocation'), variables('virtualmachineTemplatefileName'), parameters('_artifactsLocationSasToken'))]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "VmSettings": {
+                        "value": "[parameters('VmSettings')]"
+                    }
+                }
+            }
+        }
+    ],
+    "outputs": {
+        "storageaccountname": {
+            "type": "string",
+            "value": "reference('CreateStorage').outputs.storagename.value"
+        }
+    }
+}
