@@ -1,0 +1,83 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "westeurope"
+        },
+        "armProviderNamespace": {
+            "value": "Microsoft.RecoveryServices"
+        },
+        "vaultName": {
+            "value": "RB"
+        },
+        "vaultRG": {
+            "value": "Mode1"
+        },
+        "vaultSubID": {
+            "value": "aeb44919-96b9-42cf-a108-0cec7dc86b31"
+        },
+        "policyName": {
+            "value": "YeniPolis"
+        },
+        "instantRpRetentionRangeInDays": {
+            "value": 1
+        },
+        "schedule": {
+            "value": {
+                "schedulePolicyType": "SimpleSchedulePolicy",
+                "scheduleRunFrequency": "Daily",
+                "scheduleRunDays": null,
+                "scheduleRunTimes": [
+                    "2021-05-30T22:00:00.000Z"
+                ]
+            }
+        },
+        "retention": {
+            "value": {
+                "retentionPolicyType": "LongTermRetentionPolicy",
+                "dailySchedule": {
+                    "retentionTimes": [
+                        "2021-05-30T22:00:00.000Z"
+                    ],
+                    "retentionDuration": {
+                        "count": 8,
+                        "durationType": "Days"
+                    }
+                },
+                "weeklySchedule": null,
+                "monthlySchedule": null,
+                "yearlySchedule": null
+            }
+        },
+        "timeZone": {
+            "value": "UTC"
+        },
+        "instantRPDetails": {
+            "value": {}
+        },
+        "fabricName": {
+            "value": "Azure"
+        },
+        "protectionContainers": {
+            "value": [
+                "IaasVMContainer;iaasvmcontainerv2;mode1;vm01"
+            ]
+        },
+        "protectedItems": {
+            "value": [
+                "vm;iaasvmcontainerv2;mode1;vm01"
+            ]
+        },
+        "sourceResourceIds": {
+            "value": [
+                "/subscriptions/aeb44919-96b9-42cf-a108-0cec7dc86b31/resourceGroups/Mode1/providers/Microsoft.Compute/virtualMachines/VM01"
+            ]
+        },
+        "extendedProperties": {
+            "value": [
+                {}
+            ]
+        }
+    }
+}
